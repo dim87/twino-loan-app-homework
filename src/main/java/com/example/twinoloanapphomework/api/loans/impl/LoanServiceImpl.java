@@ -1,6 +1,7 @@
 package com.example.twinoloanapphomework.api.loans.impl;
 
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -31,5 +32,12 @@ class LoanServiceImpl implements LoanService {
 		final Loan mappedEntity = loanMappingService.convertDto(loan);
 		final Loan savedEntity = loanRepository.save(mappedEntity);
 		return loanMappingService.convertEntity(savedEntity);
+	}
+
+	@Transactional(readOnly = true)
+	public LoanTO load(final long loanId) {
+		return loanRepository.findById(loanId)
+			.map(loan -> loanMappingService.convertEntity(loan))
+			.orElseThrow(() -> new EntityNotFoundException(String.format("loan with ID '%s' was not found", loanId)));
 	}
 }

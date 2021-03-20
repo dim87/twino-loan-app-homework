@@ -1,6 +1,8 @@
 package com.example.twinoloanapphomework.api.investors.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.twinoloanapphomework.api.investors.InvestorService;
 import com.example.twinoloanapphomework.api.investors.InvestorTO;
+import com.example.twinoloanapphomework.api.loaninvestments.impl.exceptions.InsufficientFundsException;
 
 @Service
 class InvestorServiceImpl implements InvestorService {
@@ -31,5 +34,29 @@ class InvestorServiceImpl implements InvestorService {
 		final Investor mappedEntity = investorMappingService.convertDto(investor);
 		final Investor savedEntity = investorRepository.save(mappedEntity);
 		return investorMappingService.convertEntity(savedEntity);
+	}
+
+	@Transactional(readOnly = true)
+	public InvestorTO load(final long investorId) {
+		return investorRepository.findById(investorId)
+			.map(loan -> investorMappingService.convertEntity(loan))
+			.orElseThrow(() -> new EntityNotFoundException(String.format("investor with ID '%s' was not found", investorId)));
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void decreaseBalance(final long investorId, final BigDecimal amount) {
+		final Investor investor = investorRepository.findById(investorId)
+			.orElseThrow(() -> new EntityNotFoundException(String.format("investor with ID '%s' was not found", investorId)));
+
+		if (!hasSufficientFunds(amount, investor)) {
+			throw new InsufficientFundsException(investorId, amount);
+		}
+
+		investor.setBalance(investor.getBalance().subtract(amount));
+		investorRepository.save(investor);
+	}
+
+	private boolean hasSufficientFunds(final BigDecimal amount, final Investor investor) {
+		return investor.getBalance().compareTo(amount) > -1;
 	}
 }

@@ -11,4 +11,6 @@ public interface LoanService {
 	List<LoanTO> list();
 
 	LoanTO create(@Valid LoanTO loan);
+
+	LoanTO load(long loanId);
 }

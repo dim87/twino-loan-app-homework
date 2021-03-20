@@ -5,8 +5,8 @@ values
        (300, '2021-07-09', 1);
 
 
-insert into investors(name, surname)
+insert into investors(name, surname, balance)
 values
-('name1', 'surname1'),
-('name2', 'surname2'),
-('name3', 'surname3');
+('name1', 'surname1', 100),
+('name2', 'surname2', 200),
+('name3', 'surname3', 300);
