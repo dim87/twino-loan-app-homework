@@ -13,7 +13,7 @@ import com.example.twinoloanapphomework.api.loaninvestments.LoanInvestmentTO;
 import com.example.twinoloanapphomework.api.loaninvestments.impl.exceptions.InvestmentLimitReachedException;
 import com.example.twinoloanapphomework.api.loans.LoanService;
 import com.example.twinoloanapphomework.api.utils.DateUtils;
-import com.example.twinoloanapphomework.config.InvestmentConfiguration;
+import com.example.twinoloanapphomework.config.InvestmentAppConfiguration;
 
 @Service
 class LoanInvestmentServiceImpl implements LoanInvestmentService {
@@ -31,7 +31,7 @@ class LoanInvestmentServiceImpl implements LoanInvestmentService {
 	private InvestorService investorService;
 
 	@Autowired
-	private InvestmentConfiguration investmentConfiguration;
+	private InvestmentAppConfiguration investmentAppConfiguration;
 
 	@Transactional(rollbackFor = Exception.class)
 	public LoanInvestmentTO invest(@Valid final LoanInvestmentTO loanInvestmentTO) {
@@ -48,7 +48,7 @@ class LoanInvestmentServiceImpl implements LoanInvestmentService {
 	}
 
 	private void validateInvestorHasNotReachedInvestmentLimit(final long investorId) {
-		final int maxCountPerMonth = investmentConfiguration.getMaxCountPerMonth();
+		final int maxCountPerMonth = investmentAppConfiguration.getMaxCountPerMonth();
 		final Date dateOneMonthAgo = DateUtils.getDateOneMonthAgo();
 		final long count = loanInvestmentRepository.countAllByInvestorIdAndCreatedAfter(investorId, dateOneMonthAgo);
 

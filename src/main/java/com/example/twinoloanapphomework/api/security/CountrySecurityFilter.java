@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.springframework.web.filter.GenericFilterBean;
 
 @Component
@@ -22,12 +21,10 @@ public class CountrySecurityFilter extends GenericFilterBean {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
-		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-
-		var httpRequest = (HttpServletRequest)request;
-		var address = getClientAddress(httpRequest);
+		final HttpServletRequest httpRequest = (HttpServletRequest)request;
+		final String address = getClientAddress(httpRequest);
 		if (!countrySecurityService.requestingIpAllowed(address)) {
-			var httpResponse = (HttpServletResponse) response;
+			final HttpServletResponse httpResponse = (HttpServletResponse)response;
 			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			return;
 		}
