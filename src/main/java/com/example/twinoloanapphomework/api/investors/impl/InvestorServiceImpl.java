@@ -44,7 +44,7 @@ class InvestorServiceImpl implements InvestorService {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void decreaseBalance(final long investorId, final BigDecimal amount) {
+	public BigDecimal decreaseBalance(final long investorId, final BigDecimal amount) {
 		final Investor investor = investorRepository.findById(investorId)
 			.orElseThrow(() -> new EntityNotFoundException(String.format("investor with ID '%s' was not found", investorId)));
 
@@ -52,8 +52,12 @@ class InvestorServiceImpl implements InvestorService {
 			throw new InsufficientFundsException(investorId, amount);
 		}
 
-		investor.setBalance(investor.getBalance().subtract(amount));
+		final BigDecimal newBalance = investor.getBalance().subtract(amount);
+
+		investor.setBalance(newBalance);
 		investorRepository.save(investor);
+
+		return newBalance;
 	}
 
 	private boolean hasSufficientFunds(final BigDecimal amount, final Investor investor) {

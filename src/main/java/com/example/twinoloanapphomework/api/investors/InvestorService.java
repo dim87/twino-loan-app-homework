@@ -15,5 +15,5 @@ public interface InvestorService {
 
 	InvestorTO load(long investorId);
 
-	void decreaseBalance(long investorId, BigDecimal amount);
+	BigDecimal decreaseBalance(long investorId, BigDecimal amount);
 }
