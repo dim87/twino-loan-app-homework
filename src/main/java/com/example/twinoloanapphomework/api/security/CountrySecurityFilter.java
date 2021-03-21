@@ -8,12 +8,16 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 @Component
 public class CountrySecurityFilter extends GenericFilterBean {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CountrySecurityFilter.class);
 
 	@Autowired
 	private CountrySecurityService countrySecurityService;
@@ -24,6 +28,7 @@ public class CountrySecurityFilter extends GenericFilterBean {
 		final HttpServletRequest httpRequest = (HttpServletRequest)request;
 		final String address = getClientAddress(httpRequest);
 		if (!countrySecurityService.requestingIpAllowed(address)) {
+			LOGGER.warn("IP '{}' is not allowed to use the service", address);
 			final HttpServletResponse httpResponse = (HttpServletResponse)response;
 			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			return;
