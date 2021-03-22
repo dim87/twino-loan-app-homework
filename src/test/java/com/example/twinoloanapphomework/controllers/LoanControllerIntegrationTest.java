@@ -6,46 +6,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.TimeZone;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.example.twinoloanapphomework.api.loans.LoanTO;
+import com.example.twinoloanapphomework.utils.BaseIntegrationTest;
 import com.example.twinoloanapphomework.utils.TestDateUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class LoanControllerIntegrationTest {
-
-	@LocalServerPort
-	private Integer port;
-
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-
-	private MockMvc mockMvc;
-
-	final ObjectMapper mapper = new ObjectMapper();
-
-	@BeforeAll
-	public static void initializeTimeZone() {
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-	}
-
-	@BeforeEach
-	public void setup() throws Exception {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-	}
+public class LoanControllerIntegrationTest extends BaseIntegrationTest {
 
 	@Test
 	public void userRequestsListsOfLoansSuccessfully() throws Exception {
