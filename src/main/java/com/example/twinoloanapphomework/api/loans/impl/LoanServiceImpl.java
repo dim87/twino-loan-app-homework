@@ -1,5 +1,6 @@
 package com.example.twinoloanapphomework.api.loans.impl;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.twinoloanapphomework.api.loans.LoanService;
 import com.example.twinoloanapphomework.api.loans.LoanTO;
+import com.example.twinoloanapphomework.api.loans.impl.exceptions.LoanDateMustBeInFutureException;
 
 @Service
 class LoanServiceImpl implements LoanService {
@@ -29,9 +31,18 @@ class LoanServiceImpl implements LoanService {
 
 	@Transactional(rollbackFor = Exception.class)
 	public LoanTO create(final LoanTO loan) {
+		validateLoanTermIsInFuture(loan.getTerm());
+
 		final Loan mappedEntity = loanMappingService.convertDto(loan);
 		final Loan savedEntity = loanRepository.save(mappedEntity);
 		return loanMappingService.convertEntity(savedEntity);
+	}
+
+	private void validateLoanTermIsInFuture(final Date term) {
+		final Date today = new Date();
+		if (today.after(term)) {
+			throw new LoanDateMustBeInFutureException();
+		}
 	}
 
 	@Transactional(readOnly = true)

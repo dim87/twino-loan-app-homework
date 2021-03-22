@@ -14,13 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.example.twinoloanapphomework.api.investors.InvestorService;
 import com.example.twinoloanapphomework.api.loaninvestments.impl.exceptions.InsufficientFundsException;
 
 @ExtendWith(MockitoExtension.class)
 class InvestorServiceImplTest {
 
 	@InjectMocks
-	private InvestorServiceImpl investorService;
+	private final InvestorService investorService = new InvestorServiceImpl();
 
 	@Mock
 	private InvestorRepository investorRepository;

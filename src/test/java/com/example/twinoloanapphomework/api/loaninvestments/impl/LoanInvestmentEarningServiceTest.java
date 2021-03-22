@@ -19,7 +19,6 @@ class LoanInvestmentEarningServiceTest {
 	@InjectMocks
 	private LoanInvestmentEarningService loanInvestmentEarningService;
 
-
 	@Test
 	void testEarnedAmountPerMonthCalculation() {
 		final Date investedDate = new GregorianCalendar(2021, Calendar.FEBRUARY, 1).getTime();

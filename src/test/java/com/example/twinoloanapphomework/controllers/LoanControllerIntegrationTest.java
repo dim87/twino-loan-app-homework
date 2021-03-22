@@ -41,7 +41,7 @@ public class LoanControllerIntegrationTest extends BaseIntegrationTest {
 	public void userRequestsCreationOfLoanSuccessfully() throws Exception {
 		final BigDecimal amount = BigDecimal.valueOf(201.34);
 		final BigDecimal interest = BigDecimal.valueOf(10.12);
-		final Date today = new Date();
+		final Date today = TestDateUtils.getDateNextMonthFromToday();
 		final LoanTO loan = new LoanTO(null, amount, today, interest);
 
 		this.mockMvc
