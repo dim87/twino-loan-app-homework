@@ -16,6 +16,8 @@ import com.example.twinoloanapphomework.api.utils.DateUtils;
 @Service
 class LoanInvestmentEarningService {
 
+	private static final int DAYS_IN_MONTH = 30;
+
 	@Autowired
 	private LoanService loanService;
 
@@ -23,21 +25,22 @@ class LoanInvestmentEarningService {
 	public LoanInvestmentEarningTO getInvestment(final LoanInvestment investment) {
 		final long loanId = investment.getLoanId();
 		final BigDecimal invested = investment.getAmount();
-		final BigDecimal earned = getEarnedAmount(investment, loanId, invested);
+
+		final LoanTO loan = loanService.load(loanId);
+		final BigDecimal earned = getEarnedAmount(investment.getCreated(), invested, loan.getTerm(), loan.getInterestRatePerMonth());
+
 		return new LoanInvestmentEarningTO(loanId, investment.getId(), invested, earned);
 	}
 
-	private BigDecimal getEarnedAmount(final LoanInvestment investment, final long loanId, final BigDecimal invested) {
-		final LoanTO loan = loanService.load(loanId);
+	BigDecimal getEarnedAmount(final Date investedDate, final BigDecimal investedAmount, final Date loanTerm, final BigDecimal interestRatePerMonth) {
+		final long daysDifference = getDayDifferenceBetweenInvestmentAndLoanTerm(investedDate, loanTerm);
+		final BigDecimal interestPerPeriod = getInterestPerInvestmentPeriod(interestRatePerMonth, daysDifference);
 
-		final long daysDifference = getDayDifferenceBetweenInvestmentAndLoanTerm(investment.getCreated(), loan.getTerm());
-		final BigDecimal interestPerPeriod = getInterestPerInvestmentPeriod(loan.getInterestRatePerMonth(), daysDifference);
-
-		return invested.multiply(interestPerPeriod).setScale(3, RoundingMode.CEILING);
+		return investedAmount.multiply(interestPerPeriod).setScale(3, RoundingMode.CEILING);
 	}
 
 	private BigDecimal getInterestPerInvestmentPeriod(final BigDecimal interestRatePerMonth, final long daysDifference) {
-		final BigDecimal interestPerDay = interestRatePerMonth.divide(BigDecimal.valueOf(30), RoundingMode.CEILING);
+		final BigDecimal interestPerDay = interestRatePerMonth.setScale(3, RoundingMode.CEILING).divide(BigDecimal.valueOf(DAYS_IN_MONTH), RoundingMode.CEILING);
 		return interestPerDay.multiply(BigDecimal.valueOf(daysDifference));
 	}
 
