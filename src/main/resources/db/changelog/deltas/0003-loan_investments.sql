@@ -3,7 +3,7 @@ CREATE TABLE loan_investments (
 	loan_id BIGINT NOT NULL,
 	investor_id BIGINT NOT NULL,
 	amount NUMERIC(15,3) NOT NULL,
-	created DATETIME DEFAULT now()
+	created DATE DEFAULT now()
 );
 
 CREATE INDEX idx_investors_loan_id ON loan_investments(loan_id);
