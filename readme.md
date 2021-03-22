@@ -3,6 +3,7 @@
 ## Running the application
 To run the application from command line (if `docker` is present on system)
 ```
+cd docker
 docker-compose up --build
 ```
 
