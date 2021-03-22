@@ -1,6 +1,7 @@
 package com.example.twinoloanapphomework.api.geoip;
 
 import java.net.URI;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,10 @@ public class GeoIpService {
 	}
 
 	private String extractCountryCodeFromResponse(final GeoIpResponse response) {
+		if (Objects.isNull(response.getCountryCode()) || Objects.equals(response.getCountryCode(), "")) {
+			return getDefaultCountryCode();
+		}
+
 		return response.getCountryCode();
 	}
 

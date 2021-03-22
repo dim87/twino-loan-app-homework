@@ -12,8 +12,6 @@ class CountrySecurityService {
 	@Autowired
 	private InvestmentAppConfiguration investmentAppConfiguration;
 
-	private static final String LV_COUNTRY_CODE = "LV";
-
 	@Autowired
 	private GeoIpService geoIpService;
 

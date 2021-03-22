@@ -1,0 +1,8 @@
+version: '3.0'
+services:
+  twino-loan-app:
+    build: ../
+    container_name: twino-loan-app
+    restart: always
+    ports:
+      - 8085:8085

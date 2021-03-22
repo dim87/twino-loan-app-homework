@@ -38,7 +38,7 @@ public class CountrySecurityFilter extends GenericFilterBean {
 	}
 
 	private String getClientAddress(final HttpServletRequest request) {
-		String ipAddress = request.getHeader("X-FORWARDED-FOR");
+		final String ipAddress = request.getHeader("X-FORWARDED-FOR");
 		return ipAddress == null ? request.getRemoteAddr() : ipAddress;
 	}
 }
