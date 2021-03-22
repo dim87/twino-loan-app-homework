@@ -23,7 +23,7 @@ class Loan {
 
 	private BigDecimal amount;
 
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	private Date term;
 
 	private BigDecimal interestRatePerMonth;
