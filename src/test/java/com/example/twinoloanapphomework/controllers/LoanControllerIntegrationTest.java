@@ -83,4 +83,20 @@ public class LoanControllerIntegrationTest {
 			.andExpect(jsonPath("$.term").value(TestDateUtils.formatDate(today)))
 			.andExpect(jsonPath("$.interestRatePerMonth").value(interest));
 	}
+
+	@Test
+	public void userRequestsCreationOfLoanWithoutInfoThrowsValidationError() throws Exception {
+		final LoanTO loan = new LoanTO(null, null, null, null);
+
+		this.mockMvc
+			.perform(MockMvcRequestBuilders.post("http://localhost:" + port + "/loans")
+				.content(mapper.writeValueAsString(loan))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().is4xxClientError())
+			.andExpect(content().contentType("application/json"))
+			.andExpect(jsonPath("$.amount").value("amount is mandatory"))
+			.andExpect(jsonPath("$.term").value("term is mandatory"))
+			.andExpect(jsonPath("$.interestRatePerMonth").value("interestRatePerMonth is mandatory"));
+	}
 }
